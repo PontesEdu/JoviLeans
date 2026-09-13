@@ -1,0 +1,1837 @@
+/* =========================================================
+   JOVI Lens - estilo da aplicação
+   Feito mobile first: primeiro o celular ocupando a tela
+   inteira, depois a moldura do celular aparece no desktop.
+   ========================================================= */
+
+:root {
+  /* Paleta da câmera do V70 */
+  --preto: #000000;
+  --grafite: #0b0b0d;
+  --amarelo: #FFC542;
+  --amarelo-claro: #FFD566;
+  /* Azul da JOVI, usado só no que é da Lens */
+  --azul: #2C5DE8;
+  --azul-claro: #5A87FF;
+  --branco: #ffffff;
+  --cinza-1: rgba(255, 255, 255, 0.95);
+  --cinza-2: rgba(255, 255, 255, 0.56);
+  --cinza-3: rgba(255, 255, 255, 0.34);
+  --linha: rgba(255, 255, 255, 0.12);
+  --vidro: rgba(18, 18, 20, 0.82);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* No celular o app tem exatamente a altura da tela e não rola a página.
+   Quem rola é o conteúdo de dentro (galeria, performance...). */
+@media (max-width: 767.98px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--preto);
+  color: var(--branco);
+  font-family: "Segoe UI", Roboto, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* O Bootstrap trava o scroll quando abre o modal.
+   Como o app já ocupa a tela toda, devolvemos o comportamento normal. */
+body.modal-open {
+  overflow: auto;
+  padding-right: 0 !important;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ===================== LAYOUT EXTERNO ===================== */
+
+.palco {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  background: var(--preto);
+}
+
+.palco > .container-fluid {
+  width: 100%;
+}
+
+/* ===================== O CELULAR ===================== */
+
+.celular {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  background: var(--preto);
+  overflow: hidden;
+}
+
+/* ===================== BARRA DE STATUS ===================== */
+
+.barra-status {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 42px;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 20px 5px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.barra-status-icones {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.barra-status svg {
+  stroke: none;
+}
+
+.icone-bateria {
+  width: 22px;
+  height: 11px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  padding: 1.5px;
+  position: relative;
+}
+
+.icone-bateria::before {
+  content: "";
+  display: block;
+  width: 78%;
+  height: 100%;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.icone-bateria::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 3px;
+  width: 1.5px;
+  height: 4px;
+  background: currentColor;
+  border-radius: 0 1px 1px 0;
+}
+
+/* Barra de rolagem fina e escura nas áreas que rolam.
+   No celular ela nem aparece, mas no computador a barra
+   padrão do sistema ficava clara demais dentro do app. */
+.splash-conteudo,
+.gal-corpo,
+.perf-conteudo {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.splash-conteudo::-webkit-scrollbar,
+.gal-corpo::-webkit-scrollbar,
+.perf-conteudo::-webkit-scrollbar {
+  width: 6px;
+}
+
+.splash-conteudo::-webkit-scrollbar-track,
+.gal-corpo::-webkit-scrollbar-track,
+.perf-conteudo::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.splash-conteudo::-webkit-scrollbar-thumb,
+.gal-corpo::-webkit-scrollbar-thumb,
+.perf-conteudo::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+}
+
+/* ===================== TELAS ===================== */
+
+.tela {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  background: var(--preto);
+  overflow: hidden;
+}
+
+.tela.ativa {
+  display: flex;
+  animation: entrar 0.28s ease both;
+}
+
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ===================== BOTÕES COMUNS ===================== */
+
+.botao-principal {
+  width: 100%;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: var(--amarelo);
+  color: #1a1300;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: transform 0.12s ease, opacity 0.15s ease;
+}
+
+.botao-principal svg {
+  width: 18px;
+  height: 18px;
+  stroke: #1a1300;
+}
+
+.botao-principal:active {
+  transform: scale(0.97);
+}
+
+.botao-principal:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.botao-texto {
+  width: 100%;
+  padding: 12px;
+  font-size: 13.5px;
+  color: var(--cinza-2);
+}
+
+.botao-simples {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--branco);
+}
+
+.botao-simples svg {
+  width: 20px;
+  height: 20px;
+}
+
+.botao-redondo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.botao-redondo svg {
+  width: 18px;
+  height: 18px;
+}
+
+.botao-redondo.ativo svg {
+  stroke: var(--amarelo);
+  fill: var(--amarelo);
+}
+
+.botao-fantasma {
+  background: none;
+}
+
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--linha);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ponto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ponto-amarelo { background: var(--amarelo); }
+.ponto-azul { background: var(--azul-claro); }
+
+/* ===================== TELA 1 · ABERTURA ===================== */
+
+.splash-brilho {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 320px 320px at 50% 32%, rgba(255, 197, 66, 0.09), transparent 62%),
+    radial-gradient(ellipse 420px 420px at 50% 72%, rgba(44, 93, 232, 0.08), transparent 66%);
+}
+
+.splash-conteudo {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 30px 28px;
+  overflow-y: auto;
+}
+
+.splash-simbolo {
+  width: 84px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 26px;
+  background: var(--grafite);
+  border: 1px solid rgba(255, 197, 66, 0.38);
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.splash-simbolo svg { stroke-width: 1.5; }
+
+.splash-marca {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: var(--amarelo);
+  margin-bottom: 12px;
+}
+
+.splash-titulo {
+  font-size: 29px;
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  margin-bottom: 14px;
+}
+
+.splash-titulo em {
+  font-style: normal;
+  color: var(--amarelo);
+}
+
+.splash-texto {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--cinza-2);
+  max-width: 290px;
+  margin-bottom: 30px;
+}
+
+.splash-lista {
+  width: 100%;
+  max-width: 330px;
+  margin-bottom: 26px;
+}
+
+.splash-lista li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 11px 13px;
+  margin-bottom: 9px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.splash-lista strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.splash-lista small {
+  display: block;
+  font-size: 11.5px;
+  color: var(--cinza-2);
+  margin-top: 1px;
+}
+
+.splash-icone {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(44, 93, 232, 0.2);
+}
+
+.splash-icone svg {
+  width: 16px;
+  height: 16px;
+}
+
+.splash-carregando {
+  width: 100%;
+  max-width: 330px;
+  margin-bottom: 18px;
+}
+
+.splash-barra {
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.splash-barra span {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 3px;
+  background: var(--amarelo);
+  transition: width 0.18s linear;
+}
+
+.splash-status {
+  font-size: 11.5px;
+  color: var(--cinza-3);
+  margin: 9px 0 0;
+}
+
+.splash-botao {
+  max-width: 330px;
+}
+
+/* ===================== TELA 2 · CÂMERA ===================== */
+
+.cam-topo {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 48px 16px 12px;
+  background: var(--preto);
+  flex-shrink: 0;
+}
+
+.cam-ferramenta {
+  width: 38px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: var(--branco);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.cam-ferramenta svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cam-ferramenta.ativa {
+  color: var(--amarelo);
+}
+
+/* O risco sobre o ícone some quando o recurso é ligado */
+.cam-ferramenta.ativa .cam-corte {
+  display: none;
+}
+
+.cam-zeiss {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  width: auto;
+  padding: 0 6px;
+  color: var(--cinza-3);
+}
+
+.cam-proporcao {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.cam-visor {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #050505;
+}
+
+.cam-imagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1);
+  transition: transform 0.35s ease, filter 0.4s ease;
+}
+
+.cam-grade {
+  position: absolute;
+  inset: 0;
+  display: none;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.28) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.28) 1px, transparent 1px);
+  background-size: 33.33% 33.33%;
+  background-position: -1px -1px;
+}
+
+.cam-grade.ativa { display: block; }
+
+.cam-foco {
+  position: absolute;
+  width: 74px;
+  height: 74px;
+  margin: -37px 0 0 -37px;
+  border: 1.5px solid var(--amarelo);
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cam-foco.focando {
+  animation: focar 0.9s ease forwards;
+}
+
+@keyframes focar {
+  0%   { opacity: 0; transform: scale(1.5); }
+  25%  { opacity: 1; transform: scale(1); }
+  70%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+
+.cam-ilha {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translate(-50%, -16px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 15px;
+  border-radius: 100px;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 11.5px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.cam-ilha b { font-weight: 500; }
+
+.cam-ilha span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--amarelo);
+  animation: pulsar 1s ease-in-out infinite;
+}
+
+.cam-ilha.visivel {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+@keyframes pulsar {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.75); }
+}
+
+/* Aviso da IA */
+.lens-aviso {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 28px);
+  /* altura fixa nos dois estados para a marca abaixo nunca encostar */
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px 8px 5px 14px;
+  border-radius: 100px;
+  background: var(--vidro);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(90, 135, 255, 0.5);
+  font-size: 12.5px;
+  white-space: nowrap;
+  transition: border-color 0.3s ease;
+}
+
+.lens-aviso.modo-ativo {
+  border-color: rgba(255, 197, 66, 0.6);
+}
+
+.lens-ponto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--azul-claro);
+  box-shadow: 0 0 8px var(--azul-claro);
+  animation: pulsar 1.4s ease-in-out infinite;
+}
+
+.lens-aviso.modo-ativo .lens-ponto {
+  background: var(--amarelo);
+  box-shadow: 0 0 8px var(--amarelo);
+}
+
+.lens-texto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lens-texto strong {
+  font-weight: 600;
+  color: var(--azul-claro);
+}
+
+.lens-aviso.modo-ativo .lens-texto strong {
+  color: var(--amarelo);
+}
+
+.lens-botao {
+  flex-shrink: 0;
+  padding: 5px 13px;
+  border-radius: 100px;
+  background: var(--azul);
+  color: var(--branco);
+  font-size: 12px;
+  font-weight: 600;
+  transition: transform 0.12s ease;
+}
+
+.lens-botao:active { transform: scale(0.94); }
+
+.lens-marca {
+  position: absolute;
+  top: 66px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(90, 135, 255, 0.85);
+  margin: 0;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.lens-marca.modo-ativo {
+  color: rgba(255, 197, 66, 0.9);
+}
+
+/* Botão de apoio da demonstração: fica discreto para não competir
+   com os controles reais da câmera. */
+.cam-trocar {
+  position: absolute;
+  right: 12px;
+  bottom: 16px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(8px);
+  color: var(--branco);
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.cam-trocar svg {
+  width: 17px;
+  height: 17px;
+}
+
+.cam-trocar:hover,
+.cam-trocar:focus-visible { opacity: 1; }
+
+.cam-trocar:active {
+  opacity: 1;
+  transform: scale(0.92);
+}
+
+.cam-zoom {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(10px);
+}
+
+.zoom-btn {
+  min-width: 38px;
+  height: 32px;
+  border-radius: 100px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--branco);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.zoom-btn.ativo {
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--amarelo);
+  font-weight: 600;
+}
+
+.cam-rodape {
+  position: relative;
+  z-index: 20;
+  flex-shrink: 0;
+  background: var(--preto);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.cam-extras-lista {
+  display: flex;
+  gap: 7px;
+  padding: 14px 18px 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cam-extras-lista::-webkit-scrollbar { display: none; }
+
+.cam-extra {
+  flex-shrink: 0;
+  padding: 7px 13px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 12px;
+  color: var(--cinza-1);
+}
+
+.cam-extra.ativo {
+  background: rgba(255, 197, 66, 0.16);
+  color: var(--amarelo);
+}
+
+.cam-modos {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 16px 18px 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cam-modos::-webkit-scrollbar { display: none; }
+
+.cam-modo {
+  font-size: 13.5px;
+  color: var(--cinza-2);
+  white-space: nowrap;
+  transition: color 0.18s ease;
+}
+
+.cam-modo.ativo {
+  color: var(--amarelo);
+  font-weight: 600;
+}
+
+.cam-acoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 30px 22px;
+}
+
+.cam-miniatura {
+  width: 46px;
+  height: 46px;
+  border-radius: 11px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.cam-miniatura img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cam-miniatura.piscar {
+  animation: chegouFoto 0.5s ease;
+}
+
+@keyframes chegouFoto {
+  0%   { transform: scale(1.5); opacity: 0.4; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.cam-disparo {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 3px solid var(--amarelo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease;
+}
+
+.cam-disparo span {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: var(--branco);
+  transition: transform 0.1s ease;
+}
+
+.cam-disparo:active span { transform: scale(0.88); }
+
+.cam-girar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.cam-girar svg { width: 20px; height: 20px; }
+
+.cam-clarao {
+  position: absolute;
+  inset: 0;
+  background: var(--branco);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.cam-clarao.disparando {
+  animation: clarao 0.32s ease;
+}
+
+@keyframes clarao {
+  0%   { opacity: 0; }
+  20%  { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+
+/* ===================== TELA 3 · PÓS-CAPTURA ===================== */
+
+.pos-foto,
+.foto-grande {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pos-sombra {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+    rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.12) 22%,
+    rgba(0, 0, 0, 0.12) 48%, rgba(0, 0, 0, 0.9) 100%);
+}
+
+.pos-topo {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 48px 16px 0;
+}
+
+.pos-info {
+  text-align: center;
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.pos-info span {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.pos-info small {
+  font-size: 11.5px;
+  color: var(--cinza-2);
+}
+
+.pos-selos {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 16px 16px 0;
+}
+
+.pos-analise {
+  position: relative;
+  z-index: 10;
+  margin: auto 14px 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--vidro);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(90, 135, 255, 0.24);
+}
+
+.pos-analise-topo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 7px;
+}
+
+.pos-analise-icone {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(44, 93, 232, 0.22);
+  flex-shrink: 0;
+}
+
+.pos-analise-icone svg { width: 14px; height: 14px; }
+
+.pos-analise-titulo {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--azul-claro);
+  margin: 0;
+}
+
+.pos-analise-texto {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--cinza-1);
+  margin: 0 0 12px;
+}
+
+.pos-ganho {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  color: var(--cinza-2);
+  margin-top: 7px;
+}
+
+.pos-ganho-rotulo { min-width: 116px; }
+
+.pos-ganho-trilho {
+  flex: 1;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.pos-ganho-trilho i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  background: var(--azul-claro);
+  transition: width 0.8s ease;
+}
+
+.pos-ganho-valor {
+  min-width: 34px;
+  text-align: right;
+  color: var(--branco);
+  font-weight: 600;
+}
+
+.pos-rodape {
+  position: relative;
+  z-index: 10;
+  padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
+}
+
+.pos-atalhos {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 11px;
+}
+
+.pos-atalhos button {
+  flex: 1;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  font-size: 12.5px;
+  color: var(--branco);
+  transition: background 0.15s ease;
+}
+
+.pos-atalhos button svg { width: 16px; height: 16px; }
+.pos-atalhos button:active { background: rgba(255, 255, 255, 0.18); }
+
+/* ===================== TELA 4 · GALERIA ===================== */
+
+.gal-topo {
+  flex-shrink: 0;
+  padding: 48px 16px 12px;
+  background: var(--preto);
+  border-bottom: 1px solid var(--linha);
+}
+
+.gal-titulo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.gal-titulo h2 {
+  flex: 1;
+  font-size: 19px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.gal-total {
+  font-size: 11.5px;
+  color: var(--cinza-3);
+}
+
+.gal-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border-radius: 100px;
+  background: rgba(44, 93, 232, 0.16);
+  border: 1px solid rgba(90, 135, 255, 0.3);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--azul-claro);
+  margin-bottom: 12px;
+}
+
+.gal-busca {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
+  height: 42px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.07);
+  margin-bottom: 12px;
+}
+
+.gal-busca svg {
+  width: 17px;
+  height: 17px;
+  color: var(--cinza-3);
+  flex-shrink: 0;
+}
+
+.gal-busca input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--branco);
+  font-family: inherit;
+  font-size: 13.5px;
+}
+
+.gal-busca input::placeholder { color: var(--cinza-3); }
+.gal-busca input::-webkit-search-cancel-button { display: none; }
+
+.gal-limpar {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--cinza-2);
+  padding: 0 2px;
+}
+
+.gal-categorias {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.gal-categorias::-webkit-scrollbar { display: none; }
+
+.gal-categoria {
+  padding: 7px 15px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 12.5px;
+  color: var(--cinza-1);
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.gal-categoria.ativa {
+  background: var(--amarelo);
+  color: #1a1300;
+  font-weight: 600;
+}
+
+.gal-corpo {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
+}
+
+.gal-periodo {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--cinza-3);
+  text-transform: uppercase;
+  margin: 14px 0 9px;
+}
+
+.gal-periodo:first-child { margin-top: 0; }
+
+.gal-momento {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 12px;
+  margin-bottom: 11px;
+}
+
+.gal-momento-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.gal-momento-nome {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.gal-momento-nome span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gal-momento-dados {
+  font-size: 11px;
+  color: var(--cinza-2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.gal-grade {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.gal-foto {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 9px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  display: block;
+  width: 100%;
+  transition: transform 0.15s ease;
+}
+
+.gal-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gal-foto:active { transform: scale(0.96); }
+
+/* Marca "+N" sobre a última miniatura do momento */
+.gal-mais {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.52);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--branco);
+}
+
+.gal-vazio {
+  text-align: center;
+  padding: 46px 20px;
+  color: var(--cinza-2);
+}
+
+.gal-vazio svg {
+  width: 34px;
+  height: 34px;
+  color: var(--cinza-3);
+  margin: 0 auto 12px;
+}
+
+.gal-vazio p {
+  font-size: 13.5px;
+  margin: 0 0 4px;
+}
+
+.gal-vazio small {
+  font-size: 12px;
+  color: var(--cinza-3);
+}
+
+/* Esqueleto que aparece enquanto a galeria carrega */
+.gal-esqueleto {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  margin-bottom: 11px;
+}
+
+.gal-esqueleto-linha,
+.gal-esqueleto-foto {
+  border-radius: 8px;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.05) 75%);
+  background-size: 260% 100%;
+  animation: brilhar 1.2s linear infinite;
+}
+
+.gal-esqueleto-linha {
+  height: 13px;
+  width: 46%;
+  margin-bottom: 12px;
+}
+
+.gal-esqueleto-grade {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+
+.gal-esqueleto-foto { aspect-ratio: 1 / 1; }
+
+@keyframes brilhar {
+  from { background-position: 130% 0; }
+  to   { background-position: -130% 0; }
+}
+
+/* ===================== TELA 5 · FOTO ABERTA ===================== */
+
+.foto-rodape {
+  position: relative;
+  z-index: 10;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px calc(20px + env(safe-area-inset-bottom));
+}
+
+.foto-rodape .pos-atalhos {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+/* ===================== TELA 6 · EDITOR ===================== */
+
+.ed-topo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 48px 16px 12px;
+  border-bottom: 1px solid var(--linha);
+}
+
+.ed-topo h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.ed-tag {
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: rgba(44, 93, 232, 0.24);
+  color: var(--azul-claro);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.ed-pronto {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--amarelo);
+  padding: 6px 2px;
+}
+
+.ed-palco {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: #060606;
+}
+
+.ed-moldura {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 9 / 16;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  transition: aspect-ratio 0.3s ease;
+}
+
+.ed-moldura img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.25s ease;
+}
+
+.ed-proporcao {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+}
+
+.ed-painel {
+  flex-shrink: 0;
+  padding: 14px 16px calc(18px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--linha);
+  background: var(--preto);
+}
+
+.ed-legenda {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--cinza-3);
+  text-transform: uppercase;
+  margin: 0 0 9px;
+}
+
+.ed-formatos {
+  display: flex;
+  gap: 7px;
+  margin-bottom: 16px;
+}
+
+.ed-formato {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid transparent;
+  font-size: 11px;
+  color: var(--cinza-2);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ed-formato-forma {
+  height: 22px;
+  background: var(--cinza-3);
+  border-radius: 3px;
+}
+
+.ed-formato.ativo {
+  background: rgba(44, 93, 232, 0.18);
+  border-color: rgba(90, 135, 255, 0.55);
+  color: var(--branco);
+}
+
+.ed-formato.ativo .ed-formato-forma { background: var(--azul-claro); }
+
+.ed-filtros {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+  margin-bottom: 16px;
+}
+
+.ed-filtros::-webkit-scrollbar { display: none; }
+
+.ed-filtro {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: var(--cinza-2);
+}
+
+.ed-filtro-img {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.ed-filtro-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ed-filtro.ativo {
+  color: var(--amarelo);
+  font-weight: 600;
+}
+
+.ed-filtro.ativo .ed-filtro-img { border-color: var(--amarelo); }
+
+/* ===================== TELA 7 · PERFORMANCE ===================== */
+
+.perf-brilho {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 300px 260px at 50% 16%, rgba(255, 197, 66, 0.13), transparent 62%),
+    radial-gradient(ellipse 420px 340px at 50% 82%, rgba(44, 93, 232, 0.1), transparent 66%);
+}
+
+.perf-conteudo {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  padding: 60px 18px calc(22px + env(safe-area-inset-bottom));
+  text-align: center;
+}
+
+.perf-check {
+  width: 68px;
+  height: 68px;
+  margin: 6px auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 197, 66, 0.15);
+  border: 1px solid rgba(255, 197, 66, 0.45);
+  color: var(--amarelo);
+  animation: aparecerCheck 0.45s ease both;
+}
+
+.perf-check svg { width: 30px; height: 30px; }
+
+@keyframes aparecerCheck {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.perf-titulo {
+  font-size: 23px;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.perf-texto {
+  font-size: 13.5px;
+  color: var(--cinza-2);
+  margin: 0 0 22px;
+}
+
+.perf-cartao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 13px 14px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  margin-bottom: 9px;
+}
+
+.perf-icone {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: rgba(255, 197, 66, 0.14);
+  color: var(--amarelo);
+}
+
+.perf-icone.azul {
+  background: rgba(44, 93, 232, 0.2);
+  color: var(--azul-claro);
+}
+
+.perf-icone svg { width: 18px; height: 18px; }
+
+.perf-dados {
+  flex: 1;
+  min-width: 0;
+}
+
+.perf-rotulo {
+  font-size: 11px;
+  color: var(--cinza-2);
+  margin: 0 0 2px;
+}
+
+.perf-valor {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.perf-medidor {
+  width: 62px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.perf-trilho {
+  display: block;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.perf-trilho i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 3px;
+  background: var(--amarelo);
+  transition: width 0.9s ease;
+}
+
+.perf-trilho.azul i { background: var(--azul-claro); }
+
+.perf-porcento {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--cinza-2);
+}
+
+.perf-dica {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  text-align: left;
+  padding: 13px 14px;
+  border-radius: 15px;
+  background: rgba(44, 93, 232, 0.12);
+  border: 1px solid rgba(90, 135, 255, 0.28);
+  margin: 16px 0 20px;
+}
+
+.perf-dica-icone {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: rgba(44, 93, 232, 0.26);
+  color: var(--azul-claro);
+}
+
+.perf-dica-icone svg { width: 15px; height: 15px; }
+
+.perf-dica p {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--cinza-1);
+  margin: 0;
+}
+
+/* ===================== MODAL E AVISO ===================== */
+
+.celular .modal {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(3px);
+  z-index: 80;
+}
+
+.celular .modal-dialog {
+  max-width: 320px;
+  margin: auto;
+  padding: 0 16px;
+}
+
+.celular .modal-content {
+  background: #141416;
+  border: 1px solid var(--linha);
+  border-radius: 20px;
+  color: var(--branco);
+}
+
+.celular .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--linha);
+  padding: 14px 16px;
+}
+
+.celular .modal-title {
+  font-size: 15.5px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.celular .modal-body { padding: 14px 16px 18px; }
+
+.modal-legenda {
+  font-size: 12px;
+  color: var(--cinza-2);
+  margin: 0 0 14px;
+}
+
+.redes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+}
+
+.rede {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  font-size: 10.5px;
+  color: var(--cinza-2);
+}
+
+.rede-bolha {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--branco);
+  transition: transform 0.12s ease;
+}
+
+.rede:active .rede-bolha { transform: scale(0.92); }
+
+.celular .toast-container {
+  position: absolute;
+  /* acima da barra de baixo da câmera, para não tampar os modos */
+  bottom: calc(150px + env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: none;
+  display: flex;
+  justify-content: center;
+  z-index: 90;
+  pointer-events: none;
+}
+
+.celular .toast {
+  width: auto;
+  max-width: calc(100% - 32px);
+  background: rgba(22, 22, 24, 0.96);
+  border: 1px solid var(--linha);
+  border-radius: 100px;
+  color: var(--branco);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+}
+
+.celular .toast-body {
+  padding: 10px 18px;
+  font-size: 12.5px;
+  text-align: center;
+}
+
+/* ===================== TELAS MAIORES ===================== */
+
+/* A moldura só aparece quando a janela é larga E alta o bastante.
+   Sem checar a altura, o celular deitado ficaria espremido. */
+@media (min-width: 768px) and (min-height: 700px) {
+  .palco {
+    background: #131417;
+    padding: 28px 0;
+  }
+
+  .celular {
+    width: 390px;
+    height: 844px;
+    max-height: calc(100dvh - 56px);
+    border-radius: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.65);
+  }
+}
+
+/* Tela baixa (celular deitado): encolhe os espaços para nada ficar cortado
+   e evita que a interface estique numa janela larga e baixa. */
+@media (max-height: 560px) {
+  .celular { max-width: 430px; }
+  .cam-topo { padding-top: 14px; }
+  .gal-topo,
+  .ed-topo,
+  .pos-topo { padding-top: 16px; }
+  .perf-conteudo,
+  .splash-conteudo { padding-top: 22px; }
+  .barra-status { display: none; }
+  .cam-acoes { padding-bottom: 12px; }
+  .cam-disparo { width: 56px; height: 56px; }
+  .cam-disparo span { width: 44px; height: 44px; }
+  .splash-lista { display: none; }
+  .lens-aviso { top: 8px; }
+  .lens-marca { display: none; }
+  .cam-zoom { bottom: 8px; }
+  .cam-modos { padding-top: 10px; padding-bottom: 6px; }
+}
+
+/* Telas bem estreitas */
+@media (max-width: 340px) {
+  .cam-modos { gap: 15px; }
+  .cam-acoes { padding-left: 18px; padding-right: 18px; }
+  .splash-titulo { font-size: 25px; }
+  .pos-ganho-rotulo { min-width: 92px; }
+}
+
+/* Quem prefere menos animação no sistema não recebe animação aqui */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

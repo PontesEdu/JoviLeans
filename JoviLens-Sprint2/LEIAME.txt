@@ -1,0 +1,63 @@
+JOVI LENS - Challenge FIAP 1TDSOE
+Sprint 2 - Front-end da aplicacao web
+===========================================
+
+COMO ABRIR
+-----------
+Abra o arquivo index.html em qualquer navegador (Chrome, Edge, Firefox
+ou Safari). Nao precisa de servidor, internet ou instalacao.
+
+Para ver como fica no celular: abra o index.html no Chrome, aperte F12
+e ative o modo dispositivo (Ctrl+Shift+M).
+
+
+O QUE DA PARA FAZER
+--------------------
+1. Abertura        - barra de carregamento e entrada na camera
+2. Camera          - "Trocar cena" muda o que a camera esta vendo e a IA
+                     analisa de novo; o botao "Ativar" aplica o modo
+                     sugerido; a regua de modos, o zoom, a grade, o flash,
+                     o ZEISS e o temporizador funcionam; tocar no visor
+                     marca o ponto de foco; o disparo tira a foto
+3. Pos-captura     - analise da IA e barras com o que foi melhorado
+4. Galeria         - busca por texto ("sala", "comida", "modo noite"),
+                     filtro por categoria e agrupamento por momento;
+                     as fotos tiradas agora aparecem no topo
+5. Foto aberta     - foto em tela cheia com os dados do momento
+6. Editor          - formatos (Feed, Retrato, Stories, Paisagem) e seis
+                     filtros aplicados de verdade na foto
+7. Compartilhar    - janela com as redes e confirmacao
+8. Performance     - metricas da captura com animacao
+
+
+TECNOLOGIAS
+------------
+HTML5, CSS3, JavaScript (sem framework) e Bootstrap 5.3.3.
+O Bootstrap esta dentro da pasta do projeto (css/bootstrap.min.css e
+js/bootstrap.bundle.min.js), entao tudo funciona offline.
+
+
+ARQUIVOS
+---------
+index.html                  estrutura das telas
+css/bootstrap.min.css       Bootstrap 5.3.3
+css/estilo.css              estilo do projeto
+js/bootstrap.bundle.min.js  Bootstrap 5.3.3 (modal, toast, collapse)
+js/dados.js                 cenas, momentos, filtros e formatos
+js/app.js                   navegacao e interacoes
+img/                        fotos usadas nas telas
+
+
+CREDITOS DAS IMAGENS
+---------------------
+Fotos do Unsplash (licenca de uso livre, inclusive comercial, sem
+necessidade de atribuicao). Todas estao dentro da pasta img/.
+
+
+EQUIPE
+-------
+Olavo Andrade      RM573013
+Eduardo Pontes     RM570478
+Pamela Barrada     RM572973
+Guilherme Borges   RM571588
+Jessica Lima       RM572955
