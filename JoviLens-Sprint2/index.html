@@ -17,7 +17,7 @@
     <div class="row justify-content-center align-items-center g-0">
 
       <!-- Celular -->
-      <div class="col-12 col-lg-auto d-flex justify-content-center">
+      <div class="col-12 d-flex justify-content-center">
         <main class="celular" id="celular">
 
           <div class="barra-status">
@@ -52,7 +52,7 @@
               </div>
 
               <p class="splash-marca">JOVI · LENS</p>
-              <h2 class="splash-titulo">Sua câmera,<br><em>guiada por IA</em>.</h2>
+              <h1 class="splash-titulo">Sua câmera,<br><em>guiada por IA</em>.</h1>
               <p class="splash-texto">Detecta cenas, sugere modos e organiza fotos. Tudo no navegador, sem instalar.</p>
 
               <ul class="splash-lista list-unstyled">
@@ -116,9 +116,11 @@
             </div>
 
             <div class="cam-visor" id="camVisor">
-              <img class="cam-imagem" id="camImagem" src="img/cena-sala.jpg" alt="Pré-visualização da câmera: sala de estar à noite" decoding="async">
-
-              <div class="cam-grade" id="camGrade" aria-hidden="true"></div>
+              <!-- Moldura da imagem: muda de formato com o 4:3 e o 1:1 -->
+              <div class="cam-moldura" id="camMoldura">
+                <img class="cam-imagem" id="camImagem" src="img/cena-sala.jpg" alt="Pré-visualização da câmera: sala de estar à noite" decoding="async">
+                <div class="cam-grade" id="camGrade" aria-hidden="true"></div>
+              </div>
               <span class="cam-foco" id="camFoco" aria-hidden="true"></span>
 
               <!-- Origin Island: pílula que mostra o que a câmera está fazendo -->
@@ -138,9 +140,9 @@
               </button>
 
               <div class="cam-zoom" role="group" aria-label="Zoom">
-                <button class="zoom-btn" data-zoom="0.6">.6</button>
-                <button class="zoom-btn ativo" data-zoom="1">1×</button>
-                <button class="zoom-btn" data-zoom="2">2</button>
+                <button class="zoom-btn" data-zoom="0.6" aria-label="Zoom 0,6x">.6</button>
+                <button class="zoom-btn ativo" data-zoom="1" aria-label="Zoom 1x">1×</button>
+                <button class="zoom-btn" data-zoom="2" aria-label="Zoom 2x">2</button>
               </div>
             </div>
 

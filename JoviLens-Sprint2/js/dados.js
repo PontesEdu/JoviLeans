@@ -234,10 +234,11 @@ var formatos = [
   { id: 'paisagem', nome: 'Paisagem', proporcao: '16 / 9', rotulo: '16:9 · PAISAGEM' }
 ];
 
-/* Redes do modal de compartilhamento. */
+/* Redes do modal de compartilhamento. Cada uma tem a imagem do ícone
+   (pasta img) e o fundo da bolinha, que pode ser cor ou degradê. */
 var redes = [
-  { nome: 'Instagram', inicial: 'IG', cor: '#C13584' },
-  { nome: 'WhatsApp', inicial: 'WA', cor: '#25D366' },
-  { nome: 'TikTok', inicial: 'TT', cor: '#3A3A3A' },
-  { nome: 'Salvar', inicial: '↓', cor: '#2C5DE8' }
+  { nome: 'Instagram', imagem: 'img/rede-instagram.svg', fundo: 'linear-gradient(45deg, #F58529, #DD2A7B 50%, #8134AF)' },
+  { nome: 'WhatsApp', imagem: 'img/rede-whatsapp.svg', fundo: '#25D366' },
+  { nome: 'TikTok', imagem: 'img/rede-tiktok.svg', fundo: '#000000' },
+  { nome: 'Salvar', imagem: 'img/rede-salvar.svg', fundo: '#2C5DE8' }
 ];

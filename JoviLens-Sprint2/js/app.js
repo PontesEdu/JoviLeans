@@ -16,6 +16,7 @@ var estado = {
   grade: false,
   flash: false,
   zeiss: true,
+  proporcao: '4:3',
   temporizador: 0,
   capturadas: [],
   ultimaFoto: null,
@@ -87,6 +88,8 @@ function mostrarTela(nome) {
   for (var i = 0; i < telas.length; i++) {
     telas[i].classList.remove('ativa');
   }
+
+  if (nome !== 'camera' && contagem) cancelarContagem();
 
   elemento('tela-' + nome).classList.add('ativa');
   estado.telaAnterior = estado.tela;
@@ -168,13 +171,32 @@ function montarModos() {
   }
 }
 
+/* Junta o efeito do modo com o que a lente ZEISS muda.
+   Com a ZEISS desligada, as cores ficam mais apagadas. */
+function efeitoAtual() {
+  var partes = [];
+  var base = efeitoDoModo[estado.modo] || 'none';
+
+  if (base !== 'none') partes.push(base);
+  if (!estado.zeiss) partes.push('saturate(0.9) contrast(0.95)');
+
+  return partes.length > 0 ? partes.join(' ') : 'none';
+}
+
+/* A foto tirada leva o mesmo efeito, e o flash deixa ela mais clara. */
+function efeitoDaFoto() {
+  var efeito = efeitoAtual();
+  if (!estado.flash) return efeito;
+  return (efeito === 'none' ? '' : efeito + ' ') + 'brightness(1.12)';
+}
+
 function atualizarVisor() {
   var imagem = elemento('camImagem');
   var cena = cenas[estado.cena];
 
   imagem.src = cena.imagem;
   imagem.alt = 'Pré-visualização da câmera: ' + cena.alt;
-  imagem.style.filter = efeitoDoModo[estado.modo] || 'none';
+  imagem.style.filter = efeitoAtual();
   imagem.style.transform = 'scale(' + escalaDoZoom[estado.zoom] + ')';
 }
 
@@ -243,6 +265,10 @@ function trocarCena() {
 function marcarFoco(evento) {
   if (evento.target.closest('button')) return;
 
+  /* No 1:1 sobram faixas pretas em cima e embaixo: ali não tem foco */
+  var moldura = elemento('camMoldura').getBoundingClientRect();
+  if (evento.clientY < moldura.top || evento.clientY > moldura.bottom) return;
+
   var visor = elemento('camVisor');
   var area = visor.getBoundingClientRect();
   var foco = elemento('camFoco');
@@ -267,9 +293,54 @@ function esconderIlha() {
   elemento('lensMarca').classList.remove('d-none');
 }
 
+/* Guarda a contagem do temporizador enquanto ela roda. */
+var contagem = null;
+
+/* Toque no disparo: se o temporizador estiver ligado, conta antes
+   de tirar a foto. Tocar de novo durante a contagem cancela. */
 function dispararFoto() {
+  if (contagem) {
+    cancelarContagem();
+    return;
+  }
+
+  if (estado.temporizador > 0) {
+    iniciarContagem(estado.temporizador);
+    return;
+  }
+
+  tirarFoto();
+}
+
+function iniciarContagem(segundos) {
+  var restante = segundos;
+  mostrarIlha('Foto em ' + restante + ' s');
+
+  contagem = setInterval(function () {
+    restante = restante - 1;
+
+    if (restante > 0) {
+      elemento('camIlhaTexto').textContent = 'Foto em ' + restante + ' s';
+      return;
+    }
+
+    clearInterval(contagem);
+    contagem = null;
+    esconderIlha();
+    tirarFoto();
+  }, 1000);
+}
+
+function cancelarContagem() {
+  clearInterval(contagem);
+  contagem = null;
+  esconderIlha();
+}
+
+function tirarFoto() {
   var cena = cenas[estado.cena];
 
+  elemento('camClarao').classList.toggle('com-flash', estado.flash);
   reiniciarAnimacao(elemento('camClarao'), 'disparando');
   mostrarIlha('Processando com IA');
 
@@ -278,7 +349,8 @@ function dispararFoto() {
     alt: cena.alt,
     cena: estado.cena,
     modo: estado.modo,
-    efeito: efeitoDoModo[estado.modo] || 'none',
+    efeito: efeitoDaFoto(),
+    proporcao: estado.proporcao,
     hora: horaAgora(),
     cidade: cena.cidade,
     momento: cena.local
@@ -310,6 +382,7 @@ function montarPosCaptura() {
   imagem.src = foto.imagem;
   imagem.alt = foto.alt;
   imagem.style.filter = foto.efeito;
+  imagem.classList.toggle('quadrada', foto.proporcao === '1:1');
 
   elemento('posHora').textContent = 'Hoje · ' + foto.hora;
   elemento('posLocal').textContent = foto.cidade;
@@ -375,6 +448,10 @@ function momentosFiltrados() {
   var palavras = semAcento(estado.busca.toLowerCase()).split(' ');
   var resultado = [];
 
+  /* Palavras que a pessoa escreve naturalmente, mas que não
+     ajudam a achar nada. Ex.: "fotos da sala". */
+  var ignoradas = ['foto', 'fotos', 'imagem', 'imagens', 'minhas', 'meus', 'para', 'com', 'das', 'dos'];
+
   for (var i = 0; i < lista.length; i++) {
     var momento = lista[i];
 
@@ -389,7 +466,10 @@ function momentosFiltrados() {
        e "da" não atrapalham a busca. */
     var combina = true;
     for (var p = 0; p < palavras.length; p++) {
-      if (palavras[p].length >= 3 && texto.indexOf(palavras[p]) === -1) {
+      var palavra = palavras[p];
+      if (palavra.length < 3) continue;
+      if (ignoradas.indexOf(palavra) !== -1) continue;
+      if (texto.indexOf(palavra) === -1) {
         combina = false;
       }
     }
@@ -686,7 +766,9 @@ function montarRedes() {
     botao.className = 'rede';
     botao.setAttribute('data-rede', rede.nome);
     botao.innerHTML =
-      '<span class="rede-bolha" style="background:' + rede.cor + '">' + rede.inicial + '</span>' +
+      '<span class="rede-bolha" style="background:' + rede.fundo + '">' +
+        '<img src="' + rede.imagem + '" alt="" width="24" height="24">' +
+      '</span>' +
       '<span>' + rede.nome + '</span>';
     caixa.appendChild(botao);
   }
@@ -839,21 +921,23 @@ function usarFerramenta(botao) {
   if (nome === 'flash') {
     estado.flash = !estado.flash;
     botao.classList.toggle('ativa', estado.flash);
-    mostrarAviso(estado.flash ? 'Flash automático' : 'Flash desligado');
+    mostrarAviso(estado.flash ? 'Flash ligado' : 'Flash desligado');
     return;
   }
 
   if (nome === 'zeiss') {
     estado.zeiss = !estado.zeiss;
     botao.classList.toggle('ativa', estado.zeiss);
+    atualizarVisor();
     mostrarAviso(estado.zeiss ? 'Lente ZEISS ativada' : 'Lente ZEISS desativada');
     return;
   }
 
   if (nome === 'proporcao') {
-    var atual = elemento('camProporcao');
-    atual.textContent = (atual.textContent === '4:3') ? '1:1' : '4:3';
-    mostrarAviso('Proporção da foto: ' + atual.textContent);
+    estado.proporcao = (estado.proporcao === '4:3') ? '1:1' : '4:3';
+    elemento('camProporcao').textContent = estado.proporcao;
+    elemento('camVisor').classList.toggle('quadrado', estado.proporcao === '1:1');
+    mostrarAviso('Proporção da foto: ' + estado.proporcao);
     return;
   }
 
