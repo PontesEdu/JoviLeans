@@ -805,6 +805,11 @@ svg {
 
 .cam-modos::-webkit-scrollbar { display: none; }
 
+/* Centraliza os modos quando cabem na tela. Se não couberem,
+   a margem automática vira zero e a lista rola normalmente. */
+.cam-modo:first-child { margin-left: auto; }
+.cam-modo:last-child { margin-right: auto; }
+
 .cam-modo {
   font-size: 13.5px;
   color: var(--cinza-2);
